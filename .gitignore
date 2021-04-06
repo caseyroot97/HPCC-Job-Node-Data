@@ -1,0 +1,5 @@
+.DS_Store
+slurm_key.txt
+slurm_jobs/
+slurm_nodes/
+__pycache__/
