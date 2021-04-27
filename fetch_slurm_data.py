@@ -6,11 +6,13 @@ import requests
 import refresh_key
 from process_data import add_jobs_to_nodes
 
+# Updates the key for the red raider cluster if an hour has past since the last time it was used
 def get_key() -> str:
     f = open("slurm_key.txt", "r")
     keyTime = float(f.readline())
     currTime = time.time()
     oneHour = 3600
+
     # If the current time is more than one hour past the key time then the key needs to be refeshed
     if(currTime - keyTime > oneHour):
         f.close()
@@ -36,16 +38,10 @@ def fetch_slurm_nodes() -> list:
     return data
 
 if __name__ == '__main__':
-    timeStamp = time.strftime("%Y_%m_%d-%H_%M_%S")
 
+    # Gets current jobs and nodes from the red raider cluster
     jobs = fetch_slurm_jobs()
-    # f = open("slurm_jobs/"+timeStamp+".txt", "w")
-    # f.write(json.dumps(jobs, indent=4))
-    # f.close()
-
     nodes = fetch_slurm_nodes()
-    # f = open("slurm_nodes/"+timeStamp+".txt", "w")
-    # f.write(json.dumps(nodes, indent=4))
-    # f.close()
 
+    # Adds the jobs_ids to the corresponding nodes and exports it as a txt file to the slurm_nodes_with_jobs folder
     add_jobs_to_nodes(nodes, jobs)

@@ -9,7 +9,6 @@ def add_jobs_to_nodes(nodes, jobs):
         job_id = object['job_id']
         nodes_str = object['nodes']
 
-        #Debugging
         if nodes_str != "":
 
             # Separates nodes by number (ex. "cpu-3-5" to "3-5" or "cpu-23-[1-3,5]" to "23-[1-3,5]")
@@ -28,7 +27,7 @@ def add_jobs_to_nodes(nodes, jobs):
                     node_end = node_end.split(",")
                     for job_node in node_end:
 
-                        # Separates if the numbers a range
+                        # Separates if the numbers are a range
                         nodes_range = job_node.split("-")
 
                         # Adds all the nodes in the range
@@ -40,26 +39,28 @@ def add_jobs_to_nodes(nodes, jobs):
                                 else:
                                     node_dict["cpu-" + node_begin + "-" + str(int(nodes_range[0]) + x)].append(job_id)
                         
-                        # Adds a single node if it's in the set
+                        # Adds the job to a single node if it's in the set
                         else:
                             if "cpu-" + node_begin + "-" + job_node not in node_dict:
                                 node_dict["cpu-" + node_begin + "-" + job_node] = [job_id]
                             else:
                                 node_dict["cpu-" + node_begin + "-" + job_node].append(job_id)
 
-                # Adds 
+                # Adds the job to a single node not in a set
                 else:
                     if "cpu-" + node_begin + "-" + node_end not in node_dict:
                         node_dict["cpu-" + node_begin + "-" + node_end] = [job_id]
                     else:
                         node_dict["cpu-" + node_begin + "-" + node_end].append(job_id)
 
+    # Adds all the jobs in the dictionary to the correct nodes in JSON format
     for node in nodes['nodes']:
         if node['name'] in node_dict:
             node['jobs'] = node_dict.get(node['name'])
         else:
             node['jobs'] = []
 
+    # Exports the nodes with jobs as a JSON file
     timeStamp = time.strftime("%Y_%m_%d-%H_%M_%S")
     f = open("slurm_nodes_with_jobs/"+timeStamp+".txt", "w")
     f.write(json.dumps(nodes, indent=4))
