@@ -1,5 +1,7 @@
 .DS_Store
 slurm_key.txt
+__pycache__/
+env/
 slurm_jobs/
 slurm_nodes/
-__pycache__/
+slurm_nodes_with_jobs/

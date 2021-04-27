@@ -4,9 +4,10 @@ import json
 import time
 import requests
 import refresh_key
+from process_data import add_jobs_to_nodes
 
 def get_key() -> str:
-    f = open("slurmapi/slurm_key.txt", "r")
+    f = open("slurm_key.txt", "r")
     keyTime = float(f.readline())
     currTime = time.time()
     oneHour = 3600
@@ -14,7 +15,7 @@ def get_key() -> str:
     if(currTime - keyTime > oneHour):
         f.close()
         refresh_key
-        f = open("slurmapi/slurm_key.txt", "r")
+        f = open("slurm_key.txt", "r")
     key = f.readline()
     f.close()
     return key
@@ -38,12 +39,13 @@ if __name__ == '__main__':
     timeStamp = time.strftime("%Y_%m_%d-%H_%M_%S")
 
     jobs = fetch_slurm_jobs()
-    f = open("slurmapi/slurm_jobs/"+timeStamp+".txt", "w")
-    f.write(json.dumps(jobs, indent=4))
-    f.close()
+    # f = open("slurm_jobs/"+timeStamp+".txt", "w")
+    # f.write(json.dumps(jobs, indent=4))
+    # f.close()
 
     nodes = fetch_slurm_nodes()
-    f = open("slurmapi/slurm_nodes/"+timeStamp+".txt", "w")
-    f.write(json.dumps(nodes, indent=4))
-    f.close()
-    
+    # f = open("slurm_nodes/"+timeStamp+".txt", "w")
+    # f.write(json.dumps(nodes, indent=4))
+    # f.close()
+
+    add_jobs_to_nodes(nodes, jobs)
