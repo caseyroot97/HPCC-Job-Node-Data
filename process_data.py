@@ -18,14 +18,14 @@ def add_jobs_to_nodes(nodes, jobs):
             # Separates first number from the rest (ex. ['3','5'] or ['23','[1-3,5]'])
             for node in nodes_list:
                 node = node.split("-", 1)
-                node_begin = node[0]
-                node_end = node[1]
+                major_number = node[0]
+                minor_number = node[1]
 
                 # Check if the second number is a set and separates them (ex. ['1-3', '5'])
-                if node_end[0] == "[":
-                    node_end = node_end[1:-1]
-                    node_end = node_end.split(",")
-                    for job_node in node_end:
+                if minor_number[0] == "[":
+                    minor_number = minor_number[1:-1]
+                    minor_number = minor_number.split(",")
+                    for job_node in minor_number:
 
                         # Separates if the numbers are a range
                         nodes_range = job_node.split("-")
@@ -34,24 +34,24 @@ def add_jobs_to_nodes(nodes, jobs):
                         if len(nodes_range)>1:
                             loops = int(nodes_range[1])-int(nodes_range[0])+1
                             for x in range(0, loops):
-                                if "cpu-" + node_begin + "-" + job_node not in node_dict:
-                                    node_dict["cpu-" + node_begin + "-" + str(int(nodes_range[0]) + x)] = [job_id]
+                                if "cpu-" + major_number + "-" + job_node not in node_dict:
+                                    node_dict["cpu-" + major_number + "-" + str(int(nodes_range[0]) + x)] = [job_id]
                                 else:
-                                    node_dict["cpu-" + node_begin + "-" + str(int(nodes_range[0]) + x)].append(job_id)
+                                    node_dict["cpu-" + major_number + "-" + str(int(nodes_range[0]) + x)].append(job_id)
                         
                         # Adds the job to a single node if it's in the set
                         else:
-                            if "cpu-" + node_begin + "-" + job_node not in node_dict:
-                                node_dict["cpu-" + node_begin + "-" + job_node] = [job_id]
+                            if "cpu-" + major_number + "-" + job_node not in node_dict:
+                                node_dict["cpu-" + major_number + "-" + job_node] = [job_id]
                             else:
-                                node_dict["cpu-" + node_begin + "-" + job_node].append(job_id)
+                                node_dict["cpu-" + major_number + "-" + job_node].append(job_id)
 
                 # Adds the job to a single node not in a set
                 else:
-                    if "cpu-" + node_begin + "-" + node_end not in node_dict:
-                        node_dict["cpu-" + node_begin + "-" + node_end] = [job_id]
+                    if "cpu-" + major_number + "-" + minor_number not in node_dict:
+                        node_dict["cpu-" + major_number + "-" + minor_number] = [job_id]
                     else:
-                        node_dict["cpu-" + node_begin + "-" + node_end].append(job_id)
+                        node_dict["cpu-" + major_number + "-" + minor_number].append(job_id)
 
     # Adds all the jobs in the dictionary to the correct nodes in JSON format
     for node in nodes['nodes']:
