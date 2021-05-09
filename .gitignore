@@ -4,4 +4,3 @@ __pycache__/
 env/
 slurm_jobs/
 slurm_nodes/
-slurm_nodes_with_jobs/
